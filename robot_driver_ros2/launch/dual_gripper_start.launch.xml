@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="left_serial" default="/dev/ttyDeviceLeft" />
+  <arg name="right_serial" default="/dev/ttyDeviceRight" />
+  <arg name="camera_resolutions" default="1600x1296" />
+  <arg name="show_preview" default="true" />
+  <arg name="left_video_0_main" default="/dev/left_video_0_main" />
+  <arg name="left_video_0_sec" default="/dev/left_video_0_sec" />
+  <arg name="left_video_1_main" default="/dev/left_video_1_main" />
+  <arg name="left_video_1_sec" default="/dev/left_video_1_sec" />
+  <arg name="left_video_2_main" default="/dev/left_video_2_main" />
+  <arg name="left_video_2_sec" default="/dev/left_video_2_sec" />
+  <arg name="right_video_0_main" default="/dev/right_video_0_main" />
+  <arg name="right_video_0_sec" default="/dev/right_video_0_sec" />
+  <arg name="right_video_1_main" default="/dev/right_video_1_main" />
+  <arg name="right_video_1_sec" default="/dev/right_video_1_sec" />
+  <arg name="right_video_2_main" default="/dev/right_video_2_main" />
+  <arg name="right_video_2_sec" default="/dev/right_video_2_sec" />
+
+  <node pkg="robot_driver_ros2" exec="camera_view_single" name="camera" namespace="left_gripper" output="screen">
+    <param name="resolutions" value="$(var camera_resolutions)" />
+    <param name="topic_base" value="camera" />
+    <param name="show_preview" value="$(var show_preview)" />
+    <param name="usb_port" value="$(var left_serial)" />
+    <param name="camera_count" value="1" />
+    <param name="video_0_main" value="$(var left_video_0_main)" />
+    <param name="video_0_sec" value="$(var left_video_0_sec)" />
+    <param name="video_1_main" value="$(var left_video_2_main)" />
+    <param name="video_1_sec" value="$(var left_video_2_sec)" />
+    <param name="video_2_main" value="$(var left_video_1_main)" />
+    <param name="video_2_sec" value="$(var left_video_1_sec)" />
+  </node>
+
+  <node pkg="robot_driver_ros2" exec="databus_single" name="das_node" namespace="left_gripper" output="screen" launch-prefix="bash -c 'sleep 3; $0 $@' ">
+    <param name="serial_port" value="$(var left_serial)" />
+    <param name="topic_left_tactile" value="tactile/left" />
+    <param name="topic_right_tactile" value="tactile/right" />
+    <param name="topic_encoder" value="encoder" />
+    <param name="topic_target_distance" value="target_distance" />
+  </node>
+
+  <node pkg="robot_driver_ros2" exec="camera_view_single" name="camera" namespace="right_gripper" output="screen">
+    <param name="resolutions" value="$(var camera_resolutions)" />
+    <param name="topic_base" value="camera" />
+    <param name="show_preview" value="$(var show_preview)" />
+    <param name="usb_port" value="$(var right_serial)" />
+    <param name="camera_count" value="1" />
+    <param name="video_0_main" value="$(var right_video_0_main)" />
+    <param name="video_0_sec" value="$(var right_video_0_sec)" />
+    <param name="video_1_main" value="$(var right_video_2_main)" />
+    <param name="video_1_sec" value="$(var right_video_2_sec)" />
+    <param name="video_2_main" value="$(var right_video_1_main)" />
+    <param name="video_2_sec" value="$(var right_video_1_sec)" />
+  </node>
+
+  <node pkg="robot_driver_ros2" exec="databus_single" name="das_node" namespace="right_gripper" output="screen" launch-prefix="bash -c 'sleep 5; $0 $@' ">
+    <param name="serial_port" value="$(var right_serial)" />
+    <param name="topic_left_tactile" value="tactile/left" />
+    <param name="topic_right_tactile" value="tactile/right" />
+    <param name="topic_encoder" value="encoder" />
+    <param name="topic_target_distance" value="target_distance" />
+  </node>
+</launch>
